@@ -41,7 +41,6 @@
             width: 100%;
         }
 
-        /* Título centrado */
         h1 {
             font-size: 1.25rem;
             font-weight: 600;
@@ -50,7 +49,6 @@
             text-align: center;
         }
 
-        /* Subtítulo centrado */
         p {
             font-size: 0.875rem;
             color: var(--text-muted);
@@ -192,4 +190,17 @@
                 const data = await response.json();
                 
                 if (response.ok) {
-                    divResultado.innerHTML = `Resultado: ${data.numero_predicho}<br><span style="color: var(--text-muted); font-size: 0.8rem; font-weight: normal;">Confianza: ${
+                    divResultado.innerHTML = `Resultado: ${data.numero_predicho}<br><span style="color: var(--text-muted); font-size: 0.8rem; font-weight: normal;">Confianza: ${data.confianza}%</span>`;
+                } else {
+                    divResultado.innerHTML = `<span style="color: #c92a2a;">Error: ${data.error}</span>`;
+                }
+            } catch (error) {
+                divResultado.innerHTML = `<span style="color: #c92a2a;">Error de conexión con el servidor.</span>`;
+            } finally {
+                btnEnviar.disabled = false;
+                btnEnviar.textContent = 'Analizar Imagen';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,4 +1,3 @@
-
 from flask import Flask, render_template, request, jsonify
 from PIL import Image, ImageOps
 from ai_edge_litert.interpreter import Interpreter
@@ -31,7 +30,6 @@ def index():
 # Ruta para procesar la imagen
 @app.route('/predecir', methods=['POST'])
 def predecir():
-
     if 'imagen' not in request.files:
         return jsonify({'error': 'No se envió ninguna imagen'}), 400
 
@@ -41,7 +39,7 @@ def predecir():
         return jsonify({'error': 'Nombre de archivo vacío'}), 400
 
     try:
-        # Preprocesamiento idéntico al original
+        # Preprocesamiento de la imagen
         img = Image.open(archivo.stream).convert('L')
         img_invertida = ImageOps.invert(img)
         img_redimensionada = img_invertida.resize((28, 28))
@@ -78,13 +76,12 @@ def predecir():
             output_details[0]['index']
         )
 
-        # Obtener resultado aplicando el ajuste de desfase (-1)
+        # Corregir el desfase restando 1 al índice predicho
         indice_predicho = int(np.argmax(predicciones[0]))
-        numero_predicho = indice_predicho - 1  # Solución al desfase
-        
-        # Opcional: Asegurarse de que esté dentro del rango 0-9 por seguridad
+        numero_predicho = indice_predicho - 1
+
         if numero_predicho < 0:
-            numero_predicho = 9  # Ajuste circular si el índice 0 representaba al 9, o cámbialo según tu modelo
+            numero_predicho = 9
 
         confianza = float(np.max(predicciones[0]) * 100)
 
@@ -92,7 +89,6 @@ def predecir():
             'numero_predicho': numero_predicho,
             'confianza': round(confianza, 2)
         })
-    
 
     except Exception as e:
         print(f"Error en predicción: {e}")
