@@ -78,14 +78,21 @@ def predecir():
             output_details[0]['index']
         )
 
-        # Obtener resultado
-        numero_predicho = int(np.argmax(predicciones[0]))
+        # Obtener resultado aplicando el ajuste de desfase (-1)
+        indice_predicho = int(np.argmax(predicciones[0]))
+        numero_predicho = indice_predicho - 1  # Solución al desfase
+        
+        # Opcional: Asegurarse de que esté dentro del rango 0-9 por seguridad
+        if numero_predicho < 0:
+            numero_predicho = 9  # Ajuste circular si el índice 0 representaba al 9, o cámbialo según tu modelo
+
         confianza = float(np.max(predicciones[0]) * 100)
 
         return jsonify({
             'numero_predicho': numero_predicho,
             'confianza': round(confianza, 2)
         })
+    
 
     except Exception as e:
         print(f"Error en predicción: {e}")
